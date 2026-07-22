@@ -8,8 +8,9 @@ async function renderTeamDetail(main, params) {
   }
 
   const players = await PlayerDB.getByTeam(team.id);
+  const activeLeague = await getActiveLeague();
   const allMatches = await MatchDB.getByTeam(team.id);
-  const matches = allMatches.filter(m => m.leagueId === (await getActiveLeague())?.id);
+  const matches = allMatches.filter(m => m.leagueId === activeLeague?.id);
   const finished = matches.filter(m => m.status === 'finished').sort((a, b) => new Date(b.date) - new Date(a.date));
   const upcoming = matches.filter(m => m.status === 'scheduled').sort((a, b) => new Date(a.date) - new Date(b.date));
   const initials = team.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
